@@ -76,10 +76,10 @@ object EmmaSerializer {
         try {
             with(nativeAdMap) {
                 putInt("id", nativeAd.campaignID.toInt())
-                putString("templateId", nativeAd.templateId ?: "")
+                putString("templateId", nativeAd.templateId)
                 putInt("times", nativeAd.times.toInt())
-                putString("tag", nativeAd.tag ?: "")
-                putString("cta", nativeAd.cta ?: "")
+                putString("tag", nativeAd.tag)
+                putString("cta", nativeAd.cta)
                 putString("showOn", if(nativeAd.showOnWebView()) "inapp" else "browser")
                 putMap("params", paramsToWritableMap(nativeAd.params))
                 putMap("fields", nativeAdFieldsToWritableMap(nativeAd.nativeAdContent))
@@ -104,7 +104,7 @@ object EmmaSerializer {
             if (!value.fieldContainer.isNullOrEmpty()){
                 fieldsMap.putArray(value.fieldName, processNativeAdContainer(value.fieldContainer!!))
             } else {
-                fieldsMap.putString(value.fieldName, value.fieldValue ?: "")
+                fieldsMap.putString(value.fieldName, value.fieldValue)
             }
         }
         return fieldsMap
