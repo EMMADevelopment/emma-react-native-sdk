@@ -190,7 +190,10 @@ fun ReadableArray.toStringArray(): Array<String> {
     val array = arrayListOf<String>()
     for (i in 0 until size()) {
         if (getType(i) == ReadableType.String) {
-            array.add(getString(i))
+            val stringValue = getString(i)
+            if(stringValue !== null){
+                array.add(getString(i))
+            }
         }
     }
     return array.toTypedArray()
