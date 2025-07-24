@@ -104,7 +104,7 @@ object EmmaSerializer {
             if (!value.fieldContainer.isNullOrEmpty()){
                 fieldsMap.putArray(value.fieldName, processNativeAdContainer(value.fieldContainer!!))
             } else {
-                fieldsMap.putString(value.fieldName, value.fieldValue)
+                fieldsMap.putString(value.fieldName, value.fieldValue ?: "")
             }
         }
         return fieldsMap
