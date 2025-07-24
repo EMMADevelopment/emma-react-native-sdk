@@ -191,7 +191,7 @@ fun ReadableArray.toStringArray(): Array<String> {
     for (i in 0 until size()) {
         if (getType(i) == ReadableType.String) {
             val stringValue = getString(i)
-            if(stringValue !== null){
+            if(stringValue != null){
                 array.add(getString(i))
             }
         }
