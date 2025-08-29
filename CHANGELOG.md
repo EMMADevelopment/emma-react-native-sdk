@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.8.1
-- Update the native iOS SDK dependency: iOS 26 update.
+- Update iOS SDK dependency to version 4.15.5.
 
 ## 1.8.0
 
