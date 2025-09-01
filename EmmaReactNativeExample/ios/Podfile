@@ -77,11 +77,11 @@ target 'EmmaReactNativeExampleSwift' do
 end
 
 target 'NotificationService' do
-  pod 'eMMa', '~> 4.15.4'
+  pod 'eMMa', '~> 4.15.5'
 end
 
 target 'NotificationServiceSwift' do
-  pod 'eMMa', '~> 4.15.4'
+  pod 'eMMa', '~> 4.15.5'
 end
 
 
