@@ -317,7 +317,7 @@ public class EmmaReactNativeManager: NSObject {
                     rejecter reject: RCTPromiseRejectBlock) {
         
         let orderId = orderMap["orderId"] as? String
-        let totalPrice = orderMap["totalPrice"] as? Double
+        let totalPrice = (orderMap["totalPrice"] as? NSNumber)?.doubleValue
         let customerId = orderMap["customerId"] as? String
         let coupon = orderMap["coupon"] as? String
         let extras = orderMap["extras"] as? Dictionary<String, String>
@@ -328,7 +328,7 @@ public class EmmaReactNativeManager: NSObject {
             return
         }
         
-        guard Utils.isValidField(totalPrice) else {
+        guard let totalPrice = totalPrice, totalPrice >= 0 else {
             let error = NSError(domain: Error.invalidTotalPrice, code: 1, userInfo: nil)
             reject(String(error.code), error.domain, error)
             return
@@ -340,7 +340,7 @@ public class EmmaReactNativeManager: NSObject {
             return
         }
         
-        EMMA.startOrder(orderId: orderId!, andCustomer: customerId!, withTotalPrice: Float(totalPrice!), withExtras: extras, assignCoupon: coupon)
+        EMMA.startOrder(orderId: orderId!, andCustomer: customerId!, withTotalPrice: Float(totalPrice), withExtras: extras, assignCoupon: coupon)
         resolve(nil)
     }
     
