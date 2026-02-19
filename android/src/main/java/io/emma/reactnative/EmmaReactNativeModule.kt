@@ -28,7 +28,7 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
      * Listeners
      */
     override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
-
+        // Not used by this module
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -335,7 +335,7 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
             }
         }
 
-        if (channelId == null) {
+        if (channelId != null) {
             pushOpt.setNotificationChannelId(channelId)
         }
 
