@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.4
+
+- Fixed `currentActivity` unresolved reference for React Native 0.80+ compatibility.
+
 ## 1.8.3
 
 - Fixed Android compatibility with React Native 0.80+ due to Kotlin migration of bridge interfaces.
