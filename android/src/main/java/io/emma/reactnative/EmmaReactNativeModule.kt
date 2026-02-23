@@ -32,7 +32,7 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
     }
 
     override fun onNewIntent(intent: Intent) {
-        currentActivity?.let { EMMA.getInstance().setCurrentActivity(it) }
+        reactApplicationContext.currentActivity?.let { EMMA.getInstance().setCurrentActivity(it) }
         EMMA.getInstance().onNewNotification(intent, true)
     }
 
@@ -201,7 +201,7 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
             return
         }
 
-        currentActivity?.let { EMMA.getInstance().setCurrentActivity(it) }
+        reactApplicationContext.currentActivity?.let { EMMA.getInstance().setCurrentActivity(it) }
 
         if (type == EMMACampaign.Type.NATIVEAD) {
             val templateId = if (messageMap.hasKey("templateId")) messageMap.getString("templateId") else null
@@ -341,7 +341,7 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
 
         EMMA.getInstance().startPushSystem(pushOpt.build())
 
-        currentActivity?.let { EMMA.getInstance().setCurrentActivity(it) }
+        reactApplicationContext.currentActivity?.let { EMMA.getInstance().setCurrentActivity(it) }
         // Check pending pushes
         EMMA.getInstance().checkForRichPushUrl()
 
