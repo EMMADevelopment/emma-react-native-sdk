@@ -7,6 +7,8 @@ import io.emma.android.enums.CommunicationTypes
 import io.emma.android.model.EMMACampaign
 import io.emma.android.model.EMMANativeAd
 import io.emma.android.model.EMMANativeAdField
+import io.emma.android.model.EMMAProduct
+import io.emma.android.model.EMMAPurchaseRequest
 import io.emma.android.utils.EMMALog
 
 
@@ -153,6 +155,63 @@ object EmmaSerializer {
             }
         }
         return null
+    }
+
+    fun mapToPurchaseRequest(purchaseMap: ReadableMap): EMMAPurchaseRequest? {
+        val id = if (purchaseMap.hasKey("id")) purchaseMap.getString("id") else null
+        val totalPrice = if (purchaseMap.hasKey("totalPrice")) purchaseMap.getDouble("totalPrice") else null
+        val productsArray = if (purchaseMap.hasKey("products")) purchaseMap.getArray("products") else null
+        val customerId = if (purchaseMap.hasKey("customerId")) purchaseMap.getString("customerId") else null
+        val coupon = if (purchaseMap.hasKey("coupon")) purchaseMap.getString("coupon") else null
+        val extras = if (purchaseMap.hasKey("extras")) purchaseMap.getMap("extras")?.toStringMap() else null
+
+        if (!Utils.isValidField(id) || !Utils.isValidField(productsArray) || totalPrice == null) {
+            return null
+        }
+
+        val products = mutableListOf<EMMAProduct>()
+        for (i in 0 until productsArray!!.size()) {
+            val productMap = productsArray.getMap(i)
+            productMap?.let {
+                val product = mapToProduct(it)
+                if (product != null) {
+                    products.add(product)
+                }
+            }
+        }
+
+        if (products.isEmpty()) {
+            return null
+        }
+
+        return EMMAPurchaseRequest(
+            id = id!!,
+            totalPrice = totalPrice.toFloat(),
+            products = products,
+            customerId = customerId,
+            coupon = coupon,
+            extras = extras
+        )
+    }
+
+    private fun mapToProduct(productMap: ReadableMap): EMMAProduct? {
+        val id = if (productMap.hasKey("id")) productMap.getString("id") else null
+        val name = if (productMap.hasKey("name")) productMap.getString("name") else ""
+        val price = if (productMap.hasKey("price")) productMap.getDouble("price").toFloat() else 0f
+        val qty = if (productMap.hasKey("qty")) productMap.getDouble("qty").toFloat() else 1f
+        val extras = if (productMap.hasKey("extras")) productMap.getMap("extras")?.toStringMap() else null
+
+        if (!Utils.isValidField(id)) {
+            return null
+        }
+
+        return EMMAProduct(
+            id = id!!,
+            name = name ?: "",
+            price = price,
+            qty = qty,
+            extras = extras
+        )
     }
 }
 

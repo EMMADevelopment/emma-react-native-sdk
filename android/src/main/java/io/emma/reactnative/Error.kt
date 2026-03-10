@@ -19,4 +19,7 @@ object Error {
     const val INVALID_CUSTOMER_ID = "Customer ID cannot be empty"
     const val INVALID_HEXA_COLOR = "Color hexa code invalid"
     const val INVALID_LANGUAGE = "Language not found or empty"
+    const val INVALID_EMAIL = "Email not found or empty"
+    const val INVALID_PURCHASE_REQUEST = "Purchase request is invalid"
+    const val INVALID_PRODUCTS = "Products array is invalid or empty"
 }

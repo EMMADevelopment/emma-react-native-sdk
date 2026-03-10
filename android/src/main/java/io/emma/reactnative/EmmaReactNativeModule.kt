@@ -70,7 +70,45 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
             return
         }
 
-        EMMA.getInstance().trackExtraUserInfo(userTags!!.toStringMap())
+        EMMA.getInstance().trackUserTags(userTags!!.toStringMap())
+        promise.resolve(null)
+    }
+
+    @ReactMethod
+    fun trackUserTags(tagsInfo: ReadableMap, promise: Promise) {
+        val userTags = tagsInfo.getMap("userTags")
+        if (!Utils.isValidField(userTags)) {
+            promise.reject("0", Error.INVALID_USER_TAGS)
+            return
+        }
+
+        EMMA.getInstance().trackUserTags(userTags!!.toStringMap())
+        promise.resolve(null)
+    }
+
+    @ReactMethod
+    fun setEmail(email: String, promise: Promise) {
+        if (!Utils.isValidField(email)) {
+            promise.reject("0", Error.INVALID_EMAIL)
+            return
+        }
+
+        EMMA.getInstance().setEmail(email)
+        promise.resolve(null)
+    }
+
+    @ReactMethod
+    fun setUserProfile(profileMap: ReadableMap, promise: Promise) {
+        val customerId = if (profileMap.hasKey("customerId")) profileMap.getString("customerId") else null
+        val email = if (profileMap.hasKey("email")) profileMap.getString("email") else null
+        val tags = if (profileMap.hasKey("tags")) profileMap.getMap("tags")?.toStringMap() else null
+
+        if (!Utils.isValidField(customerId)) {
+            promise.reject("0", Error.INVALID_CUSTOMER_ID)
+            return
+        }
+
+        EMMA.getInstance().setUserProfile(customerId!!, email, tags)
         promise.resolve(null)
     }
 
@@ -359,6 +397,12 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
         promise.resolve(null)
     }
 
+    @ReactMethod
+    fun unregisterPushSystem(promise: Promise) {
+        EMMA.getInstance().unregisterPushSystem()
+        promise.resolve(null)
+    }
+
     /**
      * GDPR
      */
@@ -434,13 +478,14 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun cancelOrder(orderId: String, promise: Promise) {
-        if (!Utils.isValidField(orderId)) {
-            promise.reject("0", Error.INVALID_PRODUCT_ID)
+    fun trackPurchase(purchaseMap: ReadableMap, promise: Promise) {
+        val purchaseRequest = EmmaSerializer.mapToPurchaseRequest(purchaseMap)
+        if (purchaseRequest == null) {
+            promise.reject("0", Error.INVALID_PURCHASE_REQUEST)
             return
         }
 
-        EMMA.getInstance().cancelOrder(orderId)
+        EMMA.getInstance().trackPurchase(purchaseRequest)
         promise.resolve(null)
     }
 

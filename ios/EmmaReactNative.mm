@@ -72,6 +72,18 @@ RCT_EXPORT_METHOD(trackUserExtraInfo:(NSDictionary*) infoMap resolver:(RCTPromis
     [EmmaReactNativeManager trackUserExtraInfo:infoMap resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(trackUserTags:(NSDictionary*) infoMap resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager trackUserTags:infoMap resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(setEmail:(NSString*) email resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager setEmail:email resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(setUserProfile:(NSDictionary*) profileMap resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager setUserProfile:profileMap resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(setCustomerId:(NSString*) customerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [EmmaReactNativeManager setCustomerId:customerId resolver:resolve rejecter:reject];
 }
@@ -115,6 +127,10 @@ RCT_EXPORT_METHOD(sendPushToken: (NSString*) token resolver:(RCTPromiseResolveBl
     [EmmaReactNativeManager sendPushToken:token resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(unregisterPushSystem:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager unregisterPushSystem:resolve rejecter:reject];
+}
+
 //MARK: GDPR
 RCT_EXPORT_METHOD(isUserTrackingEnabled:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
@@ -145,8 +161,8 @@ RCT_EXPORT_METHOD(trackOrder:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     [EmmaReactNativeManager trackOrder:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(cancelOrder:(NSString*)orderId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    [EmmaReactNativeManager cancelOrder:orderId resolver:resolve rejecter:reject];
+RCT_EXPORT_METHOD(trackPurchase:(NSDictionary*)purchaseMap resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager trackPurchase:purchaseMap resolver:resolve rejecter:reject];
 }
 
 //MARK: Track with IDFA

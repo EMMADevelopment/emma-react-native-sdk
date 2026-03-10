@@ -112,4 +112,56 @@ class EmmaSerializer {
             "fields": nativeAd.nativeAdContent as? [String: Any] ?? []
         ]
     }
+
+    class func mapToPurchaseRequest(purchaseMap: [String: Any]) -> EMMAPurchaseRequest? {
+        guard let id = purchaseMap["id"] as? String,
+              let totalPrice = purchaseMap["totalPrice"] as? NSNumber,
+              let productsArray = purchaseMap["products"] as? [[String: Any]],
+              !productsArray.isEmpty else {
+            return nil
+        }
+
+        let customerId = purchaseMap["customerId"] as? String
+        let coupon = purchaseMap["coupon"] as? String
+        let extras = purchaseMap["extras"] as? [String: Any]
+
+        var products: [EMMAProduct] = []
+        for productMap in productsArray {
+            if let product = mapToProduct(productMap) {
+                products.append(product)
+            }
+        }
+
+        if products.isEmpty {
+            return nil
+        }
+
+        return EMMAPurchaseRequest(
+            id: id,
+            totalPrice: totalPrice.floatValue,
+            products: products,
+            customerId: customerId,
+            coupon: coupon,
+            extras: extras
+        )
+    }
+
+    private class func mapToProduct(_ productMap: [String: Any]) -> EMMAProduct? {
+        guard let id = productMap["id"] as? String else {
+            return nil
+        }
+
+        let name = productMap["name"] as? String ?? ""
+        let price = (productMap["price"] as? NSNumber)?.floatValue ?? 0.0
+        let qty = (productMap["qty"] as? NSNumber)?.floatValue ?? 1.0
+        let extras = productMap["extras"] as? [String: Any]
+
+        return EMMAProduct(
+            id: id,
+            name: name,
+            price: price,
+            qty: qty,
+            extras: extras
+        )
+    }
 }
