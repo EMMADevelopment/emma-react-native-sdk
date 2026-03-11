@@ -127,13 +127,10 @@ class EmmaSerializer {
 
         var products: [EMMAProduct] = []
         for productMap in productsArray {
-            if let product = mapToProduct(productMap) {
-                products.append(product)
+            guard let product = mapToProduct(productMap) else {
+                return nil
             }
-        }
-
-        if products.isEmpty {
-            return nil
+            products.append(product)
         }
 
         return EMMAPurchaseRequest(
@@ -147,14 +144,20 @@ class EmmaSerializer {
     }
 
     private class func mapToProduct(_ productMap: [String: Any]) -> EMMAProduct? {
-        guard let id = productMap["id"] as? String else {
+        guard let id = productMap["id"] as? String,
+              let priceNumber = productMap["price"] as? NSNumber,
+              let qtyNumber = productMap["qty"] as? NSNumber else {
             return nil
         }
 
         let name = productMap["name"] as? String ?? ""
-        let price = (productMap["price"] as? NSNumber)?.floatValue ?? 0.0
-        let qty = (productMap["qty"] as? NSNumber)?.floatValue ?? 1.0
+        let price = priceNumber.floatValue
+        let qty = qtyNumber.floatValue
         let extras = productMap["extras"] as? [String: Any]
+
+        if price < 0 || qty <= 0 {
+            return nil
+        }
 
         return EMMAProduct(
             id: id,

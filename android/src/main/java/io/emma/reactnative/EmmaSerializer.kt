@@ -14,6 +14,17 @@ import io.emma.android.utils.EMMALog
 
 object EmmaSerializer {
 
+    private fun ReadableMap.getDoubleOrNull(key: String): Double? {
+        return if (hasKey(key) && getType(key) == ReadableType.Number) {
+            getDouble(key)
+        } else null
+    }
+
+    private fun ReadableMap.getArrayOrNull(key: String): ReadableArray? {
+        return if (hasKey(key) && getType(key) == ReadableType.Array) {
+            getArray(key)
+        } else null
+    }
 
     fun mapToConfiguration(context: Context,
                            configurationMap: ReadableMap): EMMA.Configuration? {
@@ -159,8 +170,8 @@ object EmmaSerializer {
 
     fun mapToPurchaseRequest(purchaseMap: ReadableMap): EMMAPurchaseRequest? {
         val id = if (purchaseMap.hasKey("id")) purchaseMap.getString("id") else null
-        val totalPrice = if (purchaseMap.hasKey("totalPrice")) purchaseMap.getDouble("totalPrice") else null
-        val productsArray = if (purchaseMap.hasKey("products")) purchaseMap.getArray("products") else null
+        val totalPrice = purchaseMap.getDoubleOrNull("totalPrice")
+        val productsArray = purchaseMap.getArrayOrNull("products")
         val customerId = if (purchaseMap.hasKey("customerId")) purchaseMap.getString("customerId") else null
         val coupon = if (purchaseMap.hasKey("coupon")) purchaseMap.getString("coupon") else null
         val extras = if (purchaseMap.hasKey("extras")) purchaseMap.getMap("extras")?.toStringMap() else null
@@ -197,19 +208,15 @@ object EmmaSerializer {
     private fun mapToProduct(productMap: ReadableMap): EMMAProduct? {
         val id = if (productMap.hasKey("id")) productMap.getString("id") else null
         val name = if (productMap.hasKey("name")) productMap.getString("name") else ""
-        val price = if (productMap.hasKey("price")) productMap.getDouble("price").toFloat() else 0f
-        val qty = if (productMap.hasKey("qty")) productMap.getDouble("qty").toFloat() else 1f
+        val price = productMap.getDoubleOrNull("price")?.toFloat()
+        val qty = productMap.getDoubleOrNull("qty")?.toFloat()
         val extras = if (productMap.hasKey("extras")) productMap.getMap("extras")?.toStringMap() else null
 
-        if (!Utils.isValidField(id)) {
+        if (!Utils.isValidField(id) || price == null || qty == null) {
             return null
         }
 
-        if (price < 0) {
-            return null
-        }
-
-        if (qty <= 0) {
+        if (price < 0 || qty <= 0) {
             return null
         }
 
