@@ -75,8 +75,8 @@ export default class EmmaSdk {
   static trackOrder(): void {
     EmmaReactNative.trackOrder();
   }
-  static trackPurchase(purchaseRequest: PurchaseRequest): void {
-    EmmaReactNative.trackPurchase(purchaseRequest);
+  static trackPurchase(purchaseRequest: PurchaseRequest): Promise<void> {
+    return EmmaReactNative.trackPurchase(purchaseRequest);
   }
   static inAppMessage(inAppMessageParams: InAppMessageParams): Promise<Array<NativeAd> | null> {
     if (inAppMessageParams.type === IN_APP_TYPE.BANNER && Platform.OS !== 'android') {

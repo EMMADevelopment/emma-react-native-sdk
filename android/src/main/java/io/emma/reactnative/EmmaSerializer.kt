@@ -169,15 +169,15 @@ object EmmaSerializer {
             return null
         }
 
+        if (totalPrice < 0) {
+            return null
+        }
+
         val products = mutableListOf<EMMAProduct>()
         for (i in 0 until productsArray!!.size()) {
-            val productMap = productsArray.getMap(i)
-            productMap?.let {
-                val product = mapToProduct(it)
-                if (product != null) {
-                    products.add(product)
-                }
-            }
+            val productMap = productsArray.getMap(i) ?: return null
+            val product = mapToProduct(productMap) ?: return null
+            products.add(product)
         }
 
         if (products.isEmpty()) {
@@ -202,6 +202,14 @@ object EmmaSerializer {
         val extras = if (productMap.hasKey("extras")) productMap.getMap("extras")?.toStringMap() else null
 
         if (!Utils.isValidField(id)) {
+            return null
+        }
+
+        if (price < 0) {
+            return null
+        }
+
+        if (qty <= 0) {
             return null
         }
 
