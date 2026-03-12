@@ -26,6 +26,24 @@ object EmmaSerializer {
         } else null
     }
 
+    private fun ReadableMap.getStringOrNull(key: String): String? {
+        return if (hasKey(key) && getType(key) == ReadableType.String) {
+            getString(key)
+        } else null
+    }
+
+    private fun ReadableMap.getMapOrNull(key: String): ReadableMap? {
+        return if (hasKey(key) && getType(key) == ReadableType.Map) {
+            getMap(key)
+        } else null
+    }
+
+    private fun ReadableArray.getMapOrNull(index: Int): ReadableMap? {
+        return if (getType(index) == ReadableType.Map) {
+            getMap(index)
+        } else null
+    }
+
     fun mapToConfiguration(context: Context,
                            configurationMap: ReadableMap): EMMA.Configuration? {
 
@@ -169,24 +187,24 @@ object EmmaSerializer {
     }
 
     fun mapToPurchaseRequest(purchaseMap: ReadableMap): EMMAPurchaseRequest? {
-        val id = if (purchaseMap.hasKey("id")) purchaseMap.getString("id") else null
+        val id = purchaseMap.getStringOrNull("id")
         val totalPrice = purchaseMap.getDoubleOrNull("totalPrice")
         val productsArray = purchaseMap.getArrayOrNull("products")
-        val customerId = if (purchaseMap.hasKey("customerId")) purchaseMap.getString("customerId") else null
-        val coupon = if (purchaseMap.hasKey("coupon")) purchaseMap.getString("coupon") else null
-        val extras = if (purchaseMap.hasKey("extras")) purchaseMap.getMap("extras")?.toStringMap() else null
+        val customerId = purchaseMap.getStringOrNull("customerId")
+        val coupon = purchaseMap.getStringOrNull("coupon")
+        val extras = purchaseMap.getMapOrNull("extras")?.toStringMap()
 
         if (!Utils.isValidField(id) || !Utils.isValidField(productsArray) || totalPrice == null) {
             return null
         }
 
-        if (totalPrice < 0) {
+        if (!totalPrice.isFinite() || totalPrice < 0) {
             return null
         }
 
         val products = mutableListOf<EMMAProduct>()
         for (i in 0 until productsArray!!.size()) {
-            val productMap = productsArray.getMap(i) ?: return null
+            val productMap = productsArray.getMapOrNull(i) ?: return null
             val product = mapToProduct(productMap) ?: return null
             products.add(product)
         }
@@ -206,23 +224,23 @@ object EmmaSerializer {
     }
 
     private fun mapToProduct(productMap: ReadableMap): EMMAProduct? {
-        val id = if (productMap.hasKey("id")) productMap.getString("id") else null
-        val name = if (productMap.hasKey("name")) productMap.getString("name") else ""
+        val id = productMap.getStringOrNull("id")
+        val name = productMap.getStringOrNull("name") ?: ""
         val price = productMap.getDoubleOrNull("price")?.toFloat()
         val qty = productMap.getDoubleOrNull("qty")?.toFloat()
-        val extras = if (productMap.hasKey("extras")) productMap.getMap("extras")?.toStringMap() else null
+        val extras = productMap.getMapOrNull("extras")?.toStringMap()
 
         if (!Utils.isValidField(id) || price == null || qty == null) {
             return null
         }
 
-        if (price < 0 || qty <= 0) {
+        if (!price.isFinite() || price < 0 || !qty.isFinite() || qty <= 0) {
             return null
         }
 
         return EMMAProduct(
             id = id!!,
-            name = name ?: "",
+            name = name,
             price = price,
             qty = qty,
             extras = extras

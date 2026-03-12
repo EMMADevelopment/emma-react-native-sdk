@@ -115,7 +115,10 @@ class EmmaSerializer {
 
     class func mapToPurchaseRequest(purchaseMap: [String: Any]) -> EMMAPurchaseRequest? {
         guard let id = purchaseMap["id"] as? String,
+              Utils.isValidField(id),
               let totalPrice = purchaseMap["totalPrice"] as? NSNumber,
+              totalPrice.floatValue.isFinite,
+              totalPrice.floatValue >= 0,
               let productsArray = purchaseMap["products"] as? [[String: Any]],
               !productsArray.isEmpty else {
             return nil
@@ -145,6 +148,7 @@ class EmmaSerializer {
 
     private class func mapToProduct(_ productMap: [String: Any]) -> EMMAProduct? {
         guard let id = productMap["id"] as? String,
+              Utils.isValidField(id),
               let priceNumber = productMap["price"] as? NSNumber,
               let qtyNumber = productMap["qty"] as? NSNumber else {
             return nil
@@ -155,7 +159,7 @@ class EmmaSerializer {
         let qty = qtyNumber.floatValue
         let extras = productMap["extras"] as? [String: Any]
 
-        if price < 0 || qty <= 0 {
+        if !price.isFinite || price < 0 || !qty.isFinite || qty <= 0 {
             return nil
         }
 
