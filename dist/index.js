@@ -12,8 +12,20 @@ export default class EmmaSdk {
     static trackEvent(trackEventParams) {
         EmmaReactNative.trackEvent(trackEventParams);
     }
+    /**
+     * @deprecated Use trackUserTags instead
+     */
     static trackUserExtraInfo(trackUserExtraInfoParams) {
         EmmaReactNative.trackUserExtraInfo(trackUserExtraInfoParams);
+    }
+    static trackUserTags(tags) {
+        EmmaReactNative.trackUserTags({ userTags: tags });
+    }
+    static setEmail(email) {
+        EmmaReactNative.setEmail(email);
+    }
+    static setUserProfile(setUserProfileParams) {
+        EmmaReactNative.setUserProfile(setUserProfileParams);
     }
     static trackUserLocation() {
         EmmaReactNative.trackUserLocation();
@@ -24,17 +36,26 @@ export default class EmmaSdk {
     static registerUser(registerUserParams) {
         EmmaReactNative.registerUser(registerUserParams);
     }
+    /**
+     * @deprecated Use trackPurchase instead
+     */
     static startOrder(startOrderParams) {
         EmmaReactNative.startOrder(startOrderParams);
     }
+    /**
+     * @deprecated Use trackPurchase instead
+     */
     static addProduct(addProductParams) {
         EmmaReactNative.addProduct(addProductParams);
     }
+    /**
+     * @deprecated Use trackPurchase instead
+     */
     static trackOrder() {
         EmmaReactNative.trackOrder();
     }
-    static cancelOrder(orderId) {
-        EmmaReactNative.cancelOrder(orderId);
+    static trackPurchase(purchaseRequest) {
+        EmmaReactNative.trackPurchase(purchaseRequest);
     }
     static inAppMessage(inAppMessageParams) {
         if (inAppMessageParams.type === IN_APP_TYPE.BANNER && Platform.OS !== 'android') {
@@ -53,6 +74,9 @@ export default class EmmaSdk {
     }
     static sendPushToken(token) {
         EmmaReactNative.sendPushToken(token);
+    }
+    static unregisterPushSystem() {
+        EmmaReactNative.unregisterPushSystem();
     }
     static setCustomerId(customerId) {
         EmmaReactNative.setCustomerId(customerId);

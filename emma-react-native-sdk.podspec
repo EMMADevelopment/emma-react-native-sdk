@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
   s.summary          = pkg["description"]
   s.version          = pkg["version"]
   s.dependency 'React'
-  s.dependency 'eMMa', '~> 4.15.6'
+  s.dependency 'eMMa', '~> 4.16.0'
 end

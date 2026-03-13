@@ -7,11 +7,42 @@ import io.emma.android.enums.CommunicationTypes
 import io.emma.android.model.EMMACampaign
 import io.emma.android.model.EMMANativeAd
 import io.emma.android.model.EMMANativeAdField
+import io.emma.android.model.EMMAProduct
+import io.emma.android.model.EMMAPurchaseRequest
 import io.emma.android.utils.EMMALog
 
 
 object EmmaSerializer {
 
+    private fun ReadableMap.getDoubleOrNull(key: String): Double? {
+        return if (hasKey(key) && getType(key) == ReadableType.Number) {
+            getDouble(key)
+        } else null
+    }
+
+    private fun ReadableMap.getArrayOrNull(key: String): ReadableArray? {
+        return if (hasKey(key) && getType(key) == ReadableType.Array) {
+            getArray(key)
+        } else null
+    }
+
+    private fun ReadableMap.getStringOrNull(key: String): String? {
+        return if (hasKey(key) && getType(key) == ReadableType.String) {
+            getString(key)
+        } else null
+    }
+
+    private fun ReadableMap.getMapOrNull(key: String): ReadableMap? {
+        return if (hasKey(key) && getType(key) == ReadableType.Map) {
+            getMap(key)
+        } else null
+    }
+
+    private fun ReadableArray.getMapOrNull(index: Int): ReadableMap? {
+        return if (getType(index) == ReadableType.Map) {
+            getMap(index)
+        } else null
+    }
 
     fun mapToConfiguration(context: Context,
                            configurationMap: ReadableMap): EMMA.Configuration? {
@@ -153,6 +184,67 @@ object EmmaSerializer {
             }
         }
         return null
+    }
+
+    fun mapToPurchaseRequest(purchaseMap: ReadableMap): EMMAPurchaseRequest? {
+        val id = purchaseMap.getStringOrNull("id")
+        val totalPrice = purchaseMap.getDoubleOrNull("totalPrice")
+        val productsArray = purchaseMap.getArrayOrNull("products")
+        val customerId = purchaseMap.getStringOrNull("customerId")
+        val coupon = purchaseMap.getStringOrNull("coupon")
+        val extras = purchaseMap.getMapOrNull("extras")?.toStringMap()
+
+        if (!Utils.isValidField(id) || !Utils.isValidField(productsArray) || totalPrice == null) {
+            return null
+        }
+
+        if (!totalPrice.isFinite() || totalPrice < 0) {
+            return null
+        }
+
+        val products = mutableListOf<EMMAProduct>()
+        for (i in 0 until productsArray!!.size()) {
+            val productMap = productsArray.getMapOrNull(i) ?: return null
+            val product = mapToProduct(productMap) ?: return null
+            products.add(product)
+        }
+
+        if (products.isEmpty()) {
+            return null
+        }
+
+        return EMMAPurchaseRequest(
+            id = id!!,
+            totalPrice = totalPrice.toFloat(),
+            products = products,
+            customerId = customerId,
+            coupon = coupon,
+            extras = extras
+        )
+    }
+
+    private fun mapToProduct(productMap: ReadableMap): EMMAProduct? {
+        val id = productMap.getStringOrNull("id")
+        val name = productMap.getStringOrNull("name") ?: ""
+        val price = productMap.getDoubleOrNull("price")?.toFloat()
+        val qty = productMap.getDoubleOrNull("qty")?.toFloat()
+        val extras = productMap.getMapOrNull("extras")?.toStringMap()
+
+        if (!Utils.isValidField(id) || price == null || qty == null) {
+            return null
+        }
+
+        if (!price.isFinite() || price < 0 || !qty.isFinite() || qty <= 0) {
+            return null
+        }
+
+        return EMMAProduct(
+            id = id!!,
+            name = name,
+            price = price,
+            qty = qty,
+            extras = extras
+        )
     }
 }
 

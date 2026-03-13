@@ -23,4 +23,7 @@ struct Error {
     static let invalidLanguage = "Language not found or empty"
     static let invalidConversionValue = "Invalid conversionValue for SKAdNetwork. Integer must be between 1 and 63"
     static let invalidCoarseValue = "Invalid coarseValue for SKAdNetwork. Valid values are high, medium and low"
+    static let invalidEmail = "Email not found or empty"
+    static let invalidPurchaseRequest = "Purchase request is invalid"
+    static let invalidProducts = "Products array is invalid or empty"
 }

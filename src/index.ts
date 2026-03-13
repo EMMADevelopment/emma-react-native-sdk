@@ -8,7 +8,9 @@ import {
   NativeAd,
   OpenNativeAdParams,
   PERMISSION_STATUS,
+  PurchaseRequest,
   SendInAppParams,
+  SetUserProfileParams,
   StartOrderParams,
   StartPushParams,
   StartSessionParams,
@@ -31,8 +33,20 @@ export default class EmmaSdk {
   static trackEvent(trackEventParams: TrackEventParams): void {
     EmmaReactNative.trackEvent(trackEventParams);
   }
+  /**
+   * @deprecated Use trackUserTags instead
+   */
   static trackUserExtraInfo(trackUserExtraInfoParams: TrackUserExtraInfoParams): void {
     EmmaReactNative.trackUserExtraInfo(trackUserExtraInfoParams);
+  }
+  static trackUserTags(tags: Record<string, string>): void {
+    EmmaReactNative.trackUserTags({ userTags: tags });
+  }
+  static setEmail(email: string): void {
+    EmmaReactNative.setEmail(email);
+  }
+  static setUserProfile(setUserProfileParams: SetUserProfileParams): void {
+    EmmaReactNative.setUserProfile(setUserProfileParams);
   }
   static trackUserLocation(): void {
     EmmaReactNative.trackUserLocation();
@@ -43,17 +57,26 @@ export default class EmmaSdk {
   static registerUser(registerUserParams: LoginRegisterUserParams): void {
     EmmaReactNative.registerUser(registerUserParams);
   }
+  /**
+   * @deprecated Use trackPurchase instead
+   */
   static startOrder(startOrderParams: StartOrderParams): void {
     EmmaReactNative.startOrder(startOrderParams);
   }
+  /**
+   * @deprecated Use trackPurchase instead
+   */
   static addProduct(addProductParams: AddProductParams): void {
     EmmaReactNative.addProduct(addProductParams);
   }
+  /**
+   * @deprecated Use trackPurchase instead
+   */
   static trackOrder(): void {
     EmmaReactNative.trackOrder();
   }
-  static cancelOrder(orderId: string): void {
-    EmmaReactNative.cancelOrder(orderId);
+  static trackPurchase(purchaseRequest: PurchaseRequest): Promise<void> {
+    return EmmaReactNative.trackPurchase(purchaseRequest);
   }
   static inAppMessage(inAppMessageParams: InAppMessageParams): Promise<Array<NativeAd> | null> {
     if (inAppMessageParams.type === IN_APP_TYPE.BANNER && Platform.OS !== 'android') {
@@ -72,6 +95,9 @@ export default class EmmaSdk {
   }
   static sendPushToken(token: string): void {
     EmmaReactNative.sendPushToken(token);
+  }
+  static unregisterPushSystem(): void {
+    EmmaReactNative.unregisterPushSystem();
   }
   static setCustomerId(customerId: string): void {
     EmmaReactNative.setCustomerId(customerId);

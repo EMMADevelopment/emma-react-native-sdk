@@ -112,4 +112,63 @@ class EmmaSerializer {
             "fields": nativeAd.nativeAdContent as? [String: Any] ?? []
         ]
     }
+
+    class func mapToPurchaseRequest(purchaseMap: [String: Any]) -> EMMAPurchaseRequest? {
+        guard let id = purchaseMap["id"] as? String,
+              Utils.isValidField(id),
+              let totalPrice = purchaseMap["totalPrice"] as? NSNumber,
+              totalPrice.floatValue.isFinite,
+              totalPrice.floatValue >= 0,
+              let productsArray = purchaseMap["products"] as? [[String: Any]],
+              !productsArray.isEmpty else {
+            return nil
+        }
+
+        let customerId = purchaseMap["customerId"] as? String
+        let coupon = purchaseMap["coupon"] as? String
+        let extras = purchaseMap["extras"] as? [String: Any]
+
+        var products: [EMMAProduct] = []
+        for productMap in productsArray {
+            guard let product = mapToProduct(productMap) else {
+                return nil
+            }
+            products.append(product)
+        }
+
+        return EMMAPurchaseRequest(
+            id: id,
+            totalPrice: totalPrice.floatValue,
+            products: products,
+            customerId: customerId,
+            coupon: coupon,
+            extras: extras
+        )
+    }
+
+    private class func mapToProduct(_ productMap: [String: Any]) -> EMMAProduct? {
+        guard let id = productMap["id"] as? String,
+              Utils.isValidField(id),
+              let priceNumber = productMap["price"] as? NSNumber,
+              let qtyNumber = productMap["qty"] as? NSNumber else {
+            return nil
+        }
+
+        let name = productMap["name"] as? String ?? ""
+        let price = priceNumber.floatValue
+        let qty = qtyNumber.floatValue
+        let extras = productMap["extras"] as? [String: Any]
+
+        if !price.isFinite || price < 0 || !qty.isFinite || qty <= 0 {
+            return nil
+        }
+
+        return EMMAProduct(
+            id: id,
+            name: name,
+            price: price,
+            qty: qty,
+            extras: extras
+        )
+    }
 }

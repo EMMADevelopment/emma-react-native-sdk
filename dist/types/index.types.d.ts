@@ -40,6 +40,26 @@ export interface TrackEventParams {
 export interface TrackUserExtraInfoParams {
     userTags: Record<string, string>;
 }
+export interface SetUserProfileParams {
+    customerId: string;
+    email?: string;
+    tags?: Record<string, string>;
+}
+export interface Product {
+    id: string;
+    name: string;
+    price: number;
+    qty: number;
+    extras?: Record<string, string>;
+}
+export interface PurchaseRequest {
+    id: string;
+    totalPrice: number;
+    products: Product[];
+    customerId?: string;
+    coupon?: string;
+    extras?: Record<string, string>;
+}
 export interface LoginRegisterUserParams {
     userId: string;
     email?: string;

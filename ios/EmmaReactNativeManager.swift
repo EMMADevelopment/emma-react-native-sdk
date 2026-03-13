@@ -59,8 +59,56 @@ public class EmmaReactNativeManager: NSObject {
             reject(String(error.code), error.domain, error)
             return
         }
-        
-        EMMA.trackExtraUserInfo(info: info)
+
+        EMMA.trackUserTags(tags: info)
+        resolve(nil)
+    }
+
+    @objc
+    public class func trackUserTags(_ infoMap: [String : Any],
+                            resolver resolve: RCTPromiseResolveBlock,
+                            rejecter reject: RCTPromiseRejectBlock) {
+
+        guard let info = infoMap["userTags"] as? Dictionary<String, String>  else {
+            let error = NSError(domain: Error.invalidUserInfoTags, code: 0, userInfo: nil)
+            reject(String(error.code), error.domain, error)
+            return
+        }
+
+        EMMA.trackUserTags(tags: info)
+        resolve(nil)
+    }
+
+    @objc
+    public class func setEmail(_ email: String,
+                       resolver resolve: RCTPromiseResolveBlock,
+                       rejecter reject: RCTPromiseRejectBlock) {
+
+        guard Utils.isValidField(email) else {
+            let error = NSError(domain: Error.invalidEmail, code: 0, userInfo: nil)
+            reject(String(error.code), error.domain, error)
+            return
+        }
+
+        EMMA.setEmail(email: email)
+        resolve(nil)
+    }
+
+    @objc
+    public class func setUserProfile(_ profileMap: [String : Any],
+                            resolver resolve: RCTPromiseResolveBlock,
+                            rejecter reject: RCTPromiseRejectBlock) {
+
+        guard let customerId = profileMap["customerId"] as? String, Utils.isValidField(customerId) else {
+            let error = NSError(domain: Error.invalidCustomerId, code: 0, userInfo: nil)
+            reject(String(error.code), error.domain, error)
+            return
+        }
+
+        let email = profileMap["email"] as? String
+        let tags = profileMap["tags"] as? [String: String]
+
+        EMMA.setUserProfile(customerId: customerId, email: email, tags: tags)
         resolve(nil)
     }
     
@@ -288,7 +336,14 @@ public class EmmaReactNativeManager: NSObject {
         EMMA.trackExtraUserInfo(info: ["token": token])
         resolve(nil)
     }
-    
+
+    @objc
+    public class func unregisterPushSystem(_ resolve: RCTPromiseResolveBlock,
+                              rejecter reject: RCTPromiseRejectBlock) {
+        EMMA.unregisterPushSystem()
+        resolve(nil)
+    }
+
     // MARK: - GDPR
     @objc
     public class func isUserTrackingEnabled(_ resolve: RCTPromiseResolveBlock,
@@ -374,19 +429,18 @@ public class EmmaReactNativeManager: NSObject {
     }
     
     @objc
-    public class func cancelOrder(_ orderId: String,
-                     resolver resolve: RCTPromiseResolveBlock,
-                     rejecter reject: RCTPromiseRejectBlock) {
-        
-        guard Utils.isValidField(orderId) else {
-            let error = NSError(domain: Error.invalidOrderId, code: 0, userInfo: nil)
+    public class func trackPurchase(_ purchaseMap: [String : Any],
+                       resolver resolve: RCTPromiseResolveBlock,
+                       rejecter reject: RCTPromiseRejectBlock) {
+
+        guard let purchaseRequest = EmmaSerializer.mapToPurchaseRequest(purchaseMap: purchaseMap) else {
+            let error = NSError(domain: Error.invalidPurchaseRequest, code: 0, userInfo: nil)
             reject(String(error.code), error.domain, error)
             return
         }
-        
-        EMMA.cancelOrder(orderId: orderId)
+
+        EMMA.trackPurchase(request: purchaseRequest)
         resolve(nil)
-        
     }
     
     @objc
