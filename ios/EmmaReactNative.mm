@@ -50,6 +50,10 @@ RCT_EXPORT_METHOD(startSession:(NSDictionary*) configurationMap resolver:(RCTPro
     [EmmaReactNativeManager startSession:configurationMap resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(getSdkVersion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager getSdkVersion:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(trackUserLocation:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [EmmaReactNativeManager trackUserLocation:resolve rejecter:reject];
 }

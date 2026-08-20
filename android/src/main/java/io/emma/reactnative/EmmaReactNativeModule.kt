@@ -55,6 +55,11 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
+    fun getSdkVersion(promise: Promise) {
+        promise.resolve(EMMA.getInstance().getSDKVersion())
+    }
+    
+    @ReactMethod
     fun trackUserLocation(promise: Promise) {
         Utils.runOnMainThread {
             EMMA.getInstance().startTrackingLocation()

@@ -22,6 +22,12 @@ public class EmmaReactNativeManager: NSObject {
 
     // MARK: - Start session and basics
     @objc
+    public class func getSdkVersion(_ resolve: RCTPromiseResolveBlock,
+                        rejecter reject: RCTPromiseRejectBlock) {
+        resolve(EMMA.getSDKVersion())
+    }
+
+    @objc
     public class func startSession(_ configurationMap: [String : Any],
                       resolver resolve: RCTPromiseResolveBlock,
                       rejecter reject: RCTPromiseRejectBlock) {

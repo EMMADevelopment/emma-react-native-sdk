@@ -3,6 +3,7 @@ import EmmaSdk, {
   LoginRegisterUserParams,
   NativeAd,
   PERMISSION_STATUS,
+  PurchaseRequest,
   StartSessionParams,
 } from 'emma-react-native-sdk';
 import React, { useEffect, useState } from 'react';
@@ -36,12 +37,12 @@ enum SESSION_STATE {
 }
 
 const startSessionParams: StartSessionParams = {
-  sessionKey: 'D07A3CB7E041Ee3a1f2e876085de8626a',
+  sessionKey: '',
   isDebug: true,
 };
 
 const userParams: LoginRegisterUserParams = {
-  userId: 'adrian',
+  userId: '2002',
 };
 
 const App = () => {
@@ -173,6 +174,29 @@ const App = () => {
     EmmaSdk.setUserLanguage(code);
   };
 
+  const handleGetSdkVersion = async () => {
+    const version = await EmmaSdk.getSdkVersion();
+    console.log('EMMA SDK version:', version);
+  };
+
+  const handleTrackPurchase = async () => {
+    try {
+      const purchase: PurchaseRequest = {
+        id: 'EMMA',
+        totalPrice: 24.12,
+        customerId: '2002',
+        products: [{ id: 'SDK', name: 'SDK', price: 12.06, qty: 2, extras: { ReactNative: 'working' } }],
+      };
+      await EmmaSdk.trackPurchase(purchase);
+      setHasOrder(false);
+      setHasProducts(false);
+      setTrackedOrder(false);
+      console.log('Purchase tracked');
+    } catch (err) {
+      console.error('Track purchase error', err);
+    }
+  };
+
   // Listen to deeplink requests
   Linking.addEventListener('url', ({ url }) => setDeeplink(url));
 
@@ -198,6 +222,10 @@ const App = () => {
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.mainView}>
         <Header />
         <View style={styles.scrollView}>
+          <Section title="SDK Version" />
+          <View style={styles.buttonSection}>
+            <Button onPress={handleGetSdkVersion} title="Get SDK Version" />
+          </View>
           <Section title="Deeplink" subtitle={deeplink ? 'Deeplink received' : 'No deeplink'}>
             {deeplink ? deeplink : 'Received deeplink will be displayed here.'}
           </Section>
@@ -315,12 +343,8 @@ const App = () => {
               disabled={!hasOrder || !hasProducts}
             />
             <Button
-              onPress={() => {
-                EmmaSdk.cancelOrder('EMMA');
-                setTrackedOrder(false);
-              }}
-              title="Cancel order"
-              disabled={!trackedOrder}
+              onPress={handleTrackPurchase}
+              title="Track purchase"
             />
           </View>
           <NativeAdView nativeAds={nativeAds} />

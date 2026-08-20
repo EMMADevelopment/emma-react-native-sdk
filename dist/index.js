@@ -3,6 +3,9 @@ import { IN_APP_TYPE, PERMISSION_STATUS, } from './types/index.types';
 export * from './types/index.types';
 const { EmmaReactNative } = NativeModules;
 export default class EmmaSdk {
+    static getSdkVersion() {
+        return EmmaReactNative.getSdkVersion();
+    }
     static startSession(startSessionParams) {
         return EmmaReactNative.startSession(startSessionParams);
     }
@@ -55,7 +58,7 @@ export default class EmmaSdk {
         EmmaReactNative.trackOrder();
     }
     static trackPurchase(purchaseRequest) {
-        EmmaReactNative.trackPurchase(purchaseRequest);
+        return EmmaReactNative.trackPurchase(purchaseRequest);
     }
     static inAppMessage(inAppMessageParams) {
         if (inAppMessageParams.type === IN_APP_TYPE.BANNER && Platform.OS !== 'android') {

@@ -1,6 +1,7 @@
 import { AddProductParams, InAppMessageParams, LoginRegisterUserParams, NativeAd, OpenNativeAdParams, PERMISSION_STATUS, PurchaseRequest, SendInAppParams, SetUserProfileParams, StartOrderParams, StartPushParams, StartSessionParams, TrackEventParams, TrackUserExtraInfoParams, UpdateConversionValueSkad4 } from './types/index.types';
 export * from './types/index.types';
 export default class EmmaSdk {
+    static getSdkVersion(): Promise<string>;
     static startSession(startSessionParams: StartSessionParams): Promise<void>;
     static startPush(startPushParams: StartPushParams): void;
     static trackEvent(trackEventParams: TrackEventParams): void;
@@ -26,7 +27,7 @@ export default class EmmaSdk {
      * @deprecated Use trackPurchase instead
      */
     static trackOrder(): void;
-    static trackPurchase(purchaseRequest: PurchaseRequest): void;
+    static trackPurchase(purchaseRequest: PurchaseRequest): Promise<void>;
     static inAppMessage(inAppMessageParams: InAppMessageParams): Promise<Array<NativeAd> | null>;
     static enableUserTracking(): void;
     static disableUserTracking(deleteUser: boolean): void;

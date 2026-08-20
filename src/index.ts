@@ -24,6 +24,9 @@ export * from './types/index.types';
 const { EmmaReactNative } = NativeModules;
 
 export default class EmmaSdk {
+  static getSdkVersion(): Promise<string> {
+    return EmmaReactNative.getSdkVersion();
+  }
   static startSession(startSessionParams: StartSessionParams): Promise<void> {
     return EmmaReactNative.startSession(startSessionParams);
   }
