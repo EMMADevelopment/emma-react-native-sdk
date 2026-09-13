@@ -10,6 +10,7 @@
 - Add new method login() to track an anonymous login event.
 - Add new method loginDefault() to track a login event with the default user data.
 - Add new method register() to track an anonymous registration event.
+- Add new method getInstallAttributionInfo() to retrieve install attribution data.
 
 ## 1.9.0
 
