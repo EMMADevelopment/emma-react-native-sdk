@@ -13,6 +13,7 @@ enum DefaultEvent {
 
 public class EmmaReactNativeManager: NSObject {
     static var sessionStarted = false
+    static var installAttributionDelegate: EmmaInstallAttributionDelegate?
     /**
         This method avoids that SDK launching on main queue
      */
@@ -208,7 +209,28 @@ public class EmmaReactNativeManager: NSObject {
                       rejecter reject: RCTPromiseRejectBlock) {
         processLoginRegister(registerMap, type: .register, resolver: resolve, rejecter: reject)
     }
-    
+
+    @objc
+    public class func login(_ resolve: RCTPromiseResolveBlock,
+                   rejecter reject: RCTPromiseRejectBlock) {
+        EMMA.login()
+        resolve(nil)
+    }
+
+    @objc
+    public class func loginDefault(_ resolve: RCTPromiseResolveBlock,
+                          rejecter reject: RCTPromiseRejectBlock) {
+        EMMA.loginDefault()
+        resolve(nil)
+    }
+
+    @objc
+    public class func register(_ resolve: RCTPromiseResolveBlock,
+                      rejecter reject: RCTPromiseRejectBlock) {
+        EMMA.register()
+        resolve(nil)
+    }
+
     // MARK: - Inapp messaging methods
     @objc
     public class func inAppMessage(_ messageMap: [String: Any],
@@ -246,6 +268,22 @@ public class EmmaReactNativeManager: NSObject {
         }
     }
     
+    @objc
+    public class func closeInApp(_ params: [String: Any],
+                                  resolver resolve: RCTPromiseResolveBlock,
+                                  rejecter reject: RCTPromiseRejectBlock) {
+        let type = params["type"] as? String
+        guard let requestType = EmmaSerializer.inAppTypeFromString(inAppType: type) else {
+            let error = NSError(domain: Error.unknowInappType, code: 0, userInfo: nil)
+            reject(String(error.code), error.domain, error)
+            return
+        }
+        DispatchQueue.main.async {
+            EMMA.closeInApp(type: requestType)
+        }
+        resolve(nil)
+    }
+
     private class func processInAppAction(_ params: [String : Any],
                             inappAction: InAppAction,
                             resolver resolve: RCTPromiseResolveBlock,
@@ -474,6 +512,15 @@ public class EmmaReactNativeManager: NSObject {
         EMMA.updatePostbackConversionValue(conversionValue)
     }
     
+    // MARK: - Install Attribution
+    @objc
+    public class func getInstallAttributionInfo(resolve: @escaping (Any?) -> Void,
+                                                rejecter reject: @escaping (String, String, NSError?) -> Void) {
+        let delegate = EmmaInstallAttributionDelegate(resolve: resolve, reject: reject)
+        installAttributionDelegate = delegate
+        EMMALegacy.installAttributionInfo(delegate)
+    }
+
     @objc
     public class func updateConversionValueSkad4(_ conversionModel: [String: Any],
                                            resolver resolve: RCTPromiseResolveBlock,

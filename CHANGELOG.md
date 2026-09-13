@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10.0
+
+- Update native SDK dependencies: 4.17.0 for iOS and 4.17.0 for Android.
+- Add new method `closeInApp(type)` to programmatically close an active in-app message by type.
+- Add new method getSdkVersion() to retrieve the native SDK version.
+- Fix trackPurchase to properly return a Promise, making it awaitable.
+- Add static property sdkVersion to retrieve the React Native plugin version.
+- Add new method login() to track an anonymous login event.
+- Add new method loginDefault() to track a login event with the default user data.
+- Add new method register() to track an anonymous registration event.
+
 ## 1.9.0
 
 - Update native SDK dependencies: 4.16.0 for iOS and 4.16.+ for Android.

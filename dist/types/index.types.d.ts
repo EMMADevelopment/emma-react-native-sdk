@@ -113,3 +113,24 @@ export interface UpdateConversionValueSkad4 {
     coarseValue: string;
     lockWindow?: boolean;
 }
+export interface InstallAttributionProvider {
+    id: number;
+    name: string | null;
+}
+export interface InstallAttributionSource {
+    id: number;
+    name: string | null;
+    channel: string | null;
+    params: Record<string, string> | null;
+    provider: InstallAttributionProvider | null;
+}
+export interface InstallAttributionCampaign {
+    id: number;
+    name: string | null;
+    clickParams: Record<string, string> | null;
+    source: InstallAttributionSource | null;
+}
+export interface InstallAttribution {
+    status: string;
+    campaign: InstallAttributionCampaign | null;
+}

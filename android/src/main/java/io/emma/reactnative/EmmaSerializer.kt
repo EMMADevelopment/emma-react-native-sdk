@@ -5,6 +5,7 @@ import com.facebook.react.bridge.*
 import io.emma.android.EMMA
 import io.emma.android.enums.CommunicationTypes
 import io.emma.android.model.EMMACampaign
+import io.emma.android.model.EMMAInstallAttribution
 import io.emma.android.model.EMMANativeAd
 import io.emma.android.model.EMMANativeAdField
 import io.emma.android.model.EMMAProduct
@@ -101,6 +102,57 @@ object EmmaSerializer {
         return writableMap
     }
 
+
+    fun installAttributionToWritableMap(attribution: EMMAInstallAttribution?): WritableMap {
+        val result = WritableNativeMap()
+        if (attribution == null) {
+            result.putString("status", "")
+            result.putNull("campaign")
+            return result
+        }
+        result.putString("status", attribution.status ?: "")
+        val campaign = attribution.campaign
+        if (campaign == null) {
+            result.putNull("campaign")
+            return result
+        }
+        val campaignMap = WritableNativeMap()
+        campaignMap.putInt("id", campaign.id)
+        campaignMap.putString("name", campaign.name)
+        val clickParams = campaign.clickParams
+        if (clickParams != null) {
+            campaignMap.putMap("clickParams", paramsToWritableMap(clickParams))
+        } else {
+            campaignMap.putNull("clickParams")
+        }
+        val source = campaign.source
+        if (source != null) {
+            val sourceMap = WritableNativeMap()
+            sourceMap.putInt("id", source.id)
+            sourceMap.putString("name", source.name)
+            sourceMap.putString("channel", source.channel)
+            val sourceParams = source.params
+            if (sourceParams != null) {
+                sourceMap.putMap("params", paramsToWritableMap(sourceParams))
+            } else {
+                sourceMap.putNull("params")
+            }
+            val provider = source.provider
+            if (provider != null) {
+                val providerMap = WritableNativeMap()
+                providerMap.putInt("id", provider.id)
+                providerMap.putString("name", provider.name)
+                sourceMap.putMap("provider", providerMap)
+            } else {
+                sourceMap.putNull("provider")
+            }
+            campaignMap.putMap("source", sourceMap)
+        } else {
+            campaignMap.putNull("source")
+        }
+        result.putMap("campaign", campaignMap)
+        return result
+    }
 
     fun nativeAdToWritableMap(nativeAd: EMMANativeAd): WritableMap? {
         val nativeAdMap = WritableNativeMap()
