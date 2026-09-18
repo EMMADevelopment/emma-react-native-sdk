@@ -55,6 +55,11 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
+    fun getSdkVersion(promise: Promise) {
+        promise.resolve(EMMA.getInstance().getSDKVersion())
+    }
+    
+    @ReactMethod
     fun trackUserLocation(promise: Promise) {
         Utils.runOnMainThread {
             EMMA.getInstance().startTrackingLocation()
@@ -164,6 +169,24 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
         processLoginRegister(registerMap, DefaultEvent.Register, promise)
     }
 
+    @ReactMethod
+    fun login(promise: Promise) {
+        EMMA.getInstance().login()
+        promise.resolve(null)
+    }
+
+    @ReactMethod
+    fun loginDefault(promise: Promise) {
+        EMMA.getInstance().loginDefault()
+        promise.resolve(null)
+    }
+
+    @ReactMethod
+    fun register(promise: Promise) {
+        EMMA.getInstance().register()
+        promise.resolve(null)
+    }
+
     /**
      * Messaging in-app
      */
@@ -256,6 +279,18 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
             EMMA.getInstance().getInAppMessage(request)
             promise.resolve(null)
         }
+    }
+
+    @ReactMethod
+    fun closeInApp(params: ReadableMap, promise: Promise) {
+        val rawType = params.getString("type")
+        val type = EmmaSerializer.inAppRequestTypeFromString(rawType)
+        if (!Utils.isValidField(type)) {
+            promise.reject("0", Error.UNKNOW_INAPP_TYPE)
+            return
+        }
+        EMMA.getInstance().closeInAppMessage(type!!)
+        promise.resolve(null)
     }
 
     private fun processInAppAction(params: ReadableMap, actionType: InAppAction, promise: Promise) {
@@ -509,6 +544,13 @@ class EmmaReactNativeModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun areNotificationsEnabled(promise: Promise) {
         promise.resolve(EMMA.getInstance().areNotificationsEnabled())
+    }
+
+    @ReactMethod
+    fun getInstallAttributionInfo(promise: Promise) {
+        EMMA.getInstance().getInstallAttributionInfo { attribution ->
+            promise.resolve(EmmaSerializer.installAttributionToWritableMap(attribution))
+        }
     }
 
     @ReactMethod

@@ -3,6 +3,7 @@ import { NativeModules, Platform } from 'react-native';
 import {
   AddProductParams,
   IN_APP_TYPE,
+  InstallAttribution,
   InAppMessageParams,
   LoginRegisterUserParams,
   NativeAd,
@@ -24,6 +25,11 @@ export * from './types/index.types';
 const { EmmaReactNative } = NativeModules;
 
 export default class EmmaSdk {
+  static readonly sdkVersion: string = '1.10.0';
+
+  static getSdkVersion(): Promise<string> {
+    return EmmaReactNative.getSdkVersion();
+  }
   static startSession(startSessionParams: StartSessionParams): Promise<void> {
     return EmmaReactNative.startSession(startSessionParams);
   }
@@ -56,6 +62,15 @@ export default class EmmaSdk {
   }
   static registerUser(registerUserParams: LoginRegisterUserParams): void {
     EmmaReactNative.registerUser(registerUserParams);
+  }
+  static login(): void {
+    EmmaReactNative.login();
+  }
+  static loginDefault(): void {
+    EmmaReactNative.loginDefault();
+  }
+  static register(): void {
+    EmmaReactNative.register();
   }
   /**
    * @deprecated Use trackPurchase instead
@@ -105,6 +120,12 @@ export default class EmmaSdk {
   static setUserLanguage(language: string): void {
     EmmaReactNative.setUserLanguage(language);
   }
+  static closeInApp(type: IN_APP_TYPE): void {
+    if (type === IN_APP_TYPE.BANNER && Platform.OS !== 'android') {
+      return;
+    }
+    EmmaReactNative.closeInApp({ type });
+  }
   static sendInAppImpression(sendInAppParams: SendInAppParams): void {
     EmmaReactNative.sendInAppImpression(sendInAppParams);
   }
@@ -149,5 +170,9 @@ export default class EmmaSdk {
     if (Platform.OS === 'ios') {
       EmmaReactNative.updateConversionValueSkad4(conversionModel);
     }
+  }
+
+  static getInstallAttributionInfo(): Promise<InstallAttribution> {
+    return EmmaReactNative.getInstallAttributionInfo();
   }
 }

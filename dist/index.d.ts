@@ -1,6 +1,8 @@
-import { AddProductParams, InAppMessageParams, LoginRegisterUserParams, NativeAd, OpenNativeAdParams, PERMISSION_STATUS, PurchaseRequest, SendInAppParams, SetUserProfileParams, StartOrderParams, StartPushParams, StartSessionParams, TrackEventParams, TrackUserExtraInfoParams, UpdateConversionValueSkad4 } from './types/index.types';
+import { AddProductParams, IN_APP_TYPE, InstallAttribution, InAppMessageParams, LoginRegisterUserParams, NativeAd, OpenNativeAdParams, PERMISSION_STATUS, PurchaseRequest, SendInAppParams, SetUserProfileParams, StartOrderParams, StartPushParams, StartSessionParams, TrackEventParams, TrackUserExtraInfoParams, UpdateConversionValueSkad4 } from './types/index.types';
 export * from './types/index.types';
 export default class EmmaSdk {
+    static readonly sdkVersion: string;
+    static getSdkVersion(): Promise<string>;
     static startSession(startSessionParams: StartSessionParams): Promise<void>;
     static startPush(startPushParams: StartPushParams): void;
     static trackEvent(trackEventParams: TrackEventParams): void;
@@ -14,6 +16,9 @@ export default class EmmaSdk {
     static trackUserLocation(): void;
     static loginUser(loginUserParams: LoginRegisterUserParams): void;
     static registerUser(registerUserParams: LoginRegisterUserParams): void;
+    static login(): void;
+    static loginDefault(): void;
+    static register(): void;
     /**
      * @deprecated Use trackPurchase instead
      */
@@ -26,7 +31,7 @@ export default class EmmaSdk {
      * @deprecated Use trackPurchase instead
      */
     static trackOrder(): void;
-    static trackPurchase(purchaseRequest: PurchaseRequest): void;
+    static trackPurchase(purchaseRequest: PurchaseRequest): Promise<void>;
     static inAppMessage(inAppMessageParams: InAppMessageParams): Promise<Array<NativeAd> | null>;
     static enableUserTracking(): void;
     static disableUserTracking(deleteUser: boolean): void;
@@ -35,6 +40,7 @@ export default class EmmaSdk {
     static unregisterPushSystem(): void;
     static setCustomerId(customerId: string): void;
     static setUserLanguage(language: string): void;
+    static closeInApp(type: IN_APP_TYPE): void;
     static sendInAppImpression(sendInAppParams: SendInAppParams): void;
     static sendInAppClick(sendInAppParams: SendInAppParams): void;
     static sendInAppDismissedClick(sendInAppParams: SendInAppParams): void;
@@ -44,4 +50,5 @@ export default class EmmaSdk {
     static requestNotificationPermission(): Promise<PERMISSION_STATUS>;
     static updateConversionValue(conversionValue: number): void;
     static updateConversionValueSkad4(conversionModel: UpdateConversionValueSkad4): void;
+    static getInstallAttributionInfo(): Promise<InstallAttribution>;
 }

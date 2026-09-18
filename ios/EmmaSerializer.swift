@@ -146,6 +146,50 @@ class EmmaSerializer {
         )
     }
 
+    class func installAttributionToDictionary(_ attribution: EMMAInstallAttribution?) -> [String: Any] {
+        guard let attribution = attribution else {
+            return ["status": "", "campaign": NSNull()]
+        }
+
+        var result: [String: Any] = ["status": attribution.status ?? ""]
+
+        guard let campaign = attribution.campaign else {
+            result["campaign"] = NSNull()
+            return result
+        }
+
+        var campaignDict: [String: Any] = [
+            "id": Int(campaign.id),
+            "name": campaign.name ?? NSNull(),
+            "clickParams": campaign.clickParams ?? NSNull()
+        ]
+
+        if let source = campaign.source {
+            var sourceDict: [String: Any] = [
+                "id": Int(source.id),
+                "name": source.name ?? NSNull(),
+                "channel": source.channel ?? NSNull(),
+                "params": source.params ?? NSNull()
+            ]
+
+            if let provider = source.provider {
+                sourceDict["provider"] = [
+                    "id": Int(provider.id),
+                    "name": provider.name ?? NSNull()
+                ] as [String: Any]
+            } else {
+                sourceDict["provider"] = NSNull()
+            }
+
+            campaignDict["source"] = sourceDict
+        } else {
+            campaignDict["source"] = NSNull()
+        }
+
+        result["campaign"] = campaignDict
+        return result
+    }
+
     private class func mapToProduct(_ productMap: [String: Any]) -> EMMAProduct? {
         guard let id = productMap["id"] as? String,
               Utils.isValidField(id),

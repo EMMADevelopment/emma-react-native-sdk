@@ -3,6 +3,7 @@ import EmmaSdk, {
   LoginRegisterUserParams,
   NativeAd,
   PERMISSION_STATUS,
+  PurchaseRequest,
   StartSessionParams,
 } from 'emma-react-native-sdk';
 import React, { useEffect, useState } from 'react';
@@ -36,12 +37,12 @@ enum SESSION_STATE {
 }
 
 const startSessionParams: StartSessionParams = {
-  sessionKey: 'D07A3CB7E041Ee3a1f2e876085de8626a',
+  sessionKey: '',
   isDebug: true,
 };
 
 const userParams: LoginRegisterUserParams = {
-  userId: 'adrian',
+  userId: '2002',
 };
 
 const App = () => {
@@ -59,6 +60,7 @@ const App = () => {
   const [hasProducts, setHasProducts] = useState<boolean>(false);
   const [trackedOrder, setTrackedOrder] = useState<boolean>(false);
   const [selectedLanguage, setSelectedLanguage] = useState('Spanish');
+  const [nativeSdkVersion, setNativeSdkVersion] = useState<string>('...');
 
   // Tweak colors
   const isDarkMode = useColorScheme() === 'dark';
@@ -173,6 +175,24 @@ const App = () => {
     EmmaSdk.setUserLanguage(code);
   };
 
+  const handleTrackPurchase = async () => {
+    try {
+      const purchase: PurchaseRequest = {
+        id: 'EMMA',
+        totalPrice: 24.12,
+        customerId: '2002',
+        products: [{ id: 'SDK', name: 'SDK', price: 12.06, qty: 2, extras: { ReactNative: 'working' } }],
+      };
+      await EmmaSdk.trackPurchase(purchase);
+      setHasOrder(false);
+      setHasProducts(false);
+      setTrackedOrder(false);
+      console.log('Purchase tracked');
+    } catch (err) {
+      console.error('Track purchase error', err);
+    }
+  };
+
   // Listen to deeplink requests
   Linking.addEventListener('url', ({ url }) => setDeeplink(url));
 
@@ -189,6 +209,7 @@ const App = () => {
   useEffect(() => {
     handleStartSession();
     handleInitialDeeplink();
+    EmmaSdk.getSdkVersion().then(setNativeSdkVersion).catch(() => setNativeSdkVersion('unknown'));
   }, []);
 
   // Render
@@ -198,9 +219,20 @@ const App = () => {
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.mainView}>
         <Header />
         <View style={styles.scrollView}>
+          <Section title="Native SDK" subtitle={nativeSdkVersion} />
+          <Section title="React Native plugin" subtitle={EmmaSdk.sdkVersion} />
           <Section title="Deeplink" subtitle={deeplink ? 'Deeplink received' : 'No deeplink'}>
             {deeplink ? deeplink : 'Received deeplink will be displayed here.'}
           </Section>
+          <View style={styles.buttonSection}>
+            <Button
+              onPress={async () => {
+                const info = await EmmaSdk.getInstallAttributionInfo();
+                console.log('Attribution info:', JSON.stringify(info));
+              }}
+              title="Get Attribution Info"
+            />
+          </View>
           <Section title="Session" subtitle={startedDesc}>
             Session is required. Usually, it should be triggered when the App is ready.
           </Section>
@@ -237,6 +269,12 @@ const App = () => {
             <View style={styles.buttonSection}>
               <Button onPress={handleLoginUser} title="Log in User" disabled={logged} />
             </View>
+            <Section title="Anonymous Auth" />
+            <View style={styles.buttonSection}>
+              <Button onPress={() => EmmaSdk.login()} title="Login (anonymous)" />
+              <Button onPress={() => EmmaSdk.register()} title="Register (anonymous)" />
+              <Button onPress={() => EmmaSdk.loginDefault()} title="Login Default (anonymous)" />
+            </View>
             <Section title="Events and Extras">These buttons do not have UI feedback.</Section>
             <View style={styles.buttonSection}>
               <Button
@@ -271,6 +309,8 @@ const App = () => {
                 onPress={handleInAppMessage(IN_APP_TYPE.NATIVE_AD, 'batch-template2')}
                 title="Show Native Ad"
               />
+              <Button onPress={() => EmmaSdk.closeInApp(IN_APP_TYPE.STRIP)} title="Close Strip" />
+              {isAndroid && <Button onPress={() => EmmaSdk.closeInApp(IN_APP_TYPE.BANNER)} title="Close Banner" />}
             </View>
           </View>
           <Section title="Orders and Products" subtitle={hasOrder ? 'Order started' : ''}>
@@ -315,12 +355,8 @@ const App = () => {
               disabled={!hasOrder || !hasProducts}
             />
             <Button
-              onPress={() => {
-                EmmaSdk.cancelOrder('EMMA');
-                setTrackedOrder(false);
-              }}
-              title="Cancel order"
-              disabled={!trackedOrder}
+              onPress={handleTrackPurchase}
+              title="Track purchase"
             />
           </View>
           <NativeAdView nativeAds={nativeAds} />

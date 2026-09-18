@@ -2,9 +2,9 @@ PODS:
   - boost (1.83.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
-  - eMMa (4.15.4)
-  - emma-react-native-sdk (1.8.0):
-    - eMMa (~> 4.15.4)
+  - eMMa (4.17.0)
+  - emma-react-native-sdk (1.10.0):
+    - eMMa (~> 4.17.0)
     - React
   - FBLazyVector (0.73.5)
   - FBReactNativeSpec (0.73.5):
@@ -1123,7 +1123,7 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - eMMa (~> 4.15.4)
+  - eMMa (~> 4.17.0)
   - emma-react-native-sdk (from `../node_modules/emma-react-native-sdk`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
@@ -1322,8 +1322,8 @@ SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
-  eMMa: 0b1d9d450e1e29380a8e8a1060c351317e819bed
-  emma-react-native-sdk: 0b83126ed02b573d0685b43a0b7890f99072acf9
+  eMMa: 33c1964a6b2617a24394aedd54c834bf86aa7877
+  emma-react-native-sdk: 4fb6afe0e0fc2d7857bfafbd2126b2d7dc7b8dac
   FBLazyVector: 56e0e498dbb513b96c40bac6284729ba4e62672d
   FBReactNativeSpec: 146c741a3f40361f6bc13a4ba284678cbedb5881
   Flipper: c7a0093234c4bdd456e363f2f19b2e4b27652d44
@@ -1339,7 +1339,7 @@ SPEC CHECKSUMS:
   hermes-engine: 1d1835b2cc54c381909d94d1b3c8e0a2f1a94a0e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
+  RCT-Folly: cd21f1661364f975ae76b3308167ad66b09f53f5
   RCTRequired: 2544c0f1081a5fa12e108bb8cb40e5f4581ccd87
   RCTTypeSafety: 50efabe2b115c11ed03fbf3fd79e2f163ddb5d7c
   React: 84221d5e0ce297bc57c4b6af539a62d812d89f10
@@ -1384,6 +1384,6 @@ SPEC CHECKSUMS:
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
 
-PODFILE CHECKSUM: 86335db13ad6aabf3a43893c3188482f051aab2a
+PODFILE CHECKSUM: bf32e6e0bdd090d37fc5867f22b28b08365e0b30
 
 COCOAPODS: 1.16.2

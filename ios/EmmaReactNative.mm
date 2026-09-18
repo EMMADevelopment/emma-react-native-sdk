@@ -50,6 +50,10 @@ RCT_EXPORT_METHOD(startSession:(NSDictionary*) configurationMap resolver:(RCTPro
     [EmmaReactNativeManager startSession:configurationMap resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(getSdkVersion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager getSdkVersion:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(trackUserLocation:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [EmmaReactNativeManager trackUserLocation:resolve rejecter:reject];
 }
@@ -65,6 +69,18 @@ RCT_EXPORT_METHOD(loginUser:(NSDictionary*) loginMap resolver:(RCTPromiseResolve
 
 RCT_EXPORT_METHOD(registerUser:(NSDictionary*) registerMap resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [EmmaReactNativeManager registerUser:registerMap resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(login:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager login:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(loginDefault:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager loginDefault:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(register:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager register:resolve rejecter:reject];
 }
 
 //MARK: Track user info
@@ -100,6 +116,10 @@ RCT_EXPORT_METHOD(inAppMessage:(NSDictionary*) messageMap resolver:(RCTPromiseRe
     } reject:^(NSString *code, NSString *message, NSError *error){
         reject(code, message, error);
     }];
+}
+
+RCT_EXPORT_METHOD(closeInApp:(NSDictionary*) params resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager closeInApp:params resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(sendInAppImpression:(NSDictionary*) params resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -177,6 +197,15 @@ RCT_EXPORT_METHOD(updateConversionValue:(NSInteger) conversionValue resolver: (R
 
 RCT_EXPORT_METHOD(updateConversionValueSkad4:(NSDictionary*) conversionModel resolver: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [EmmaReactNativeManager updateConversionValueSkad4:conversionModel resolver:resolve rejecter:reject];
+}
+
+//MARK: Install Attribution
+RCT_EXPORT_METHOD(getInstallAttributionInfo:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [EmmaReactNativeManager getInstallAttributionInfoWithResolve:^(id result){
+        resolve(result);
+    } rejecter:^(NSString *code, NSString *message, NSError *error){
+        reject(code, message, error);
+    }];
 }
 
 @end
